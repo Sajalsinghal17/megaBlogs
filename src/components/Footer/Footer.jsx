@@ -34,7 +34,7 @@ function Footer() {
         {/* Links */}
         <div className="flex flex-col md:flex-row md:justify-center gap-10">
           <div>
-            <h4 className="text-xs uppercase tracking-wide mb-3 opacity-90">
+            <h4 className="text-base uppercase tracking-wide mb-3 opacity-90 font-bold">
               Company
             </h4>
             <ul className="space-y-2">
@@ -62,7 +62,7 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs uppercase tracking-wide mb-3 opacity-90">
+            <h4 className="text-base uppercase tracking-wide mb-3 opacity-90 font-bold">
               Support
             </h4>
             <ul className="space-y-2">

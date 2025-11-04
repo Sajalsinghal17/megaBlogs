@@ -1,22 +1,29 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { logout } from '../../store/authSlice'
-import authService from '../../appwrite/auth'
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { FiLogOut } from 'react-icons/fi';
+import { logout } from '../../store/authSlice';
+import authService from '../../appwrite/auth';
 
-function LogoutBtn() {
-  const dispatch = useDispatch()
+function LogoutBtn({ mobile }) {
+  const dispatch = useDispatch();
 
   const logoutHandler = () => {
-    authService.logout().then(()=>{
-        dispatch(logout())
-    })
-  }
+    authService.logout().then(() => {
+      dispatch(logout());
+    });
+  };
 
   return (
-    <button className='inline-bock px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
-    onClick={logoutHandler}>Logout</button>
-  )
+    <button
+      onClick={logoutHandler}
+      className={`flex items-center gap-2 px-4 py-2 rounded-full text-white bg-red-500 hover:bg-red-600 transition font-medium ${
+        mobile ? 'w-full justify-center' : ''
+      }`}
+    >
+      <FiLogOut />
+      Logout
+    </button>
+  );
 }
 
-export default LogoutBtn
-    
+export default LogoutBtn;

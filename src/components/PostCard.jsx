@@ -23,7 +23,9 @@ function PostCard(props) {
   const slug = post.slug ?? post.$id ?? post.id ?? "";
   const featuredImage = post.featuredImage ?? null;
   const content = post.content ?? "";
-  const date = post.createdAt ? new Date(post.createdAt).toLocaleDateString() : "";
+  const date = post.createdAt
+    ? new Date(post.createdAt).toLocaleDateString()
+    : "";
 
   const ref = useRef();
   const [visible, setVisible] = useState(false);
@@ -63,8 +65,12 @@ function PostCard(props) {
           </div>
         ) : null}
 
-        <h3 className="text-lg md:text-xl font-semibold text-red-600 mb-2">{title}</h3>
-        <p className="text-gray-600 text-sm line-clamp-3 mb-4">{content}</p>
+        <h3 className="text-lg md:text-xl font-semibold text-red-600 mb-2">
+          {title}
+        </h3>
+        <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+          {content.replace(/<[^>]+>/g, "").slice(0, 120)}...
+        </p>
       </Link>
 
       <div className="flex items-center justify-between text-xs text-gray-400">

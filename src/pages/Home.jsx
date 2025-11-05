@@ -10,19 +10,9 @@ import AllPosts from "./AllPosts"; // used for Explore Blogs CTA if you prefer p
 // --- Helpful: try to import your appwrite/post helper if it exists.
 // If your project has a module like src/appwrite/posts or src/appwrite/config, update this import to match it.
 // e.g. import postsService from "../appwrite/posts";
-let postsService = null;
-try {
-  // eslint-disable-next-line
-  postsService = require("../appwrite/posts");
-} catch (e) {
-  try {
-    // fallback name some projects use
-    // eslint-disable-next-line
-    postsService = require("../appwrite/config");
-  } catch (err) {
-    postsService = null;
-  }
-}
+import appwriteService from "../appwrite/config";
+import { Query } from "appwrite";
+
 
 /**
  * Helper: attempt to fetch posts via different strategies:
@@ -67,34 +57,36 @@ export default function Home() {
   const [recentPosts, setRecentPosts] = useState([]);
 
   useEffect(() => {
-    let mounted = true;
+  let mounted = true;
 
-    async function load() {
+  const loadRecentPosts = async () => {
+    try {
       setLoading(true);
 
-      // 1) prefer posts from Redux if available
-      if (reduxAllPosts && reduxAllPosts.length > 0) {
-        if (mounted) {
-          setRecentPosts(reduxAllPosts.slice(0, 6));
-          setLoading(false);
-        }
-        return;
-      }
+      const res = await appwriteService.getPosts([
+        Query.equal("status", "active"),
+        Query.orderDesc("$createdAt"),
+        Query.limit(6),
+      ]);
 
-      // 2) else try service-based fetch (appwrite wrapper)
-      const fetched = await fetchPostsFromService();
       if (mounted) {
-        // fallback: normalize documents array
-        const arr = Array.isArray(fetched) ? fetched : (fetched?.documents ?? []);
-        setRecentPosts(arr.slice(0, 6));
-        setLoading(false);
+        setRecentPosts(res?.documents ?? []);
       }
+    } catch (error) {
+      console.error("Error fetching recent posts:", error);
+    } finally {
+      if (mounted) setLoading(false);
     }
+  };
 
-    load();
+  loadRecentPosts();
 
-    return () => { mounted = false; };
-  }, [reduxAllPosts]);
+  return () => {
+    mounted = false;
+  };
+}, []);
+
+
 
   // computed memo for hero CTAs text (keeps UX consistent)
   const ctaText = useMemo(() => (authStatus ? "Write a Post" : "Start Writing"), [authStatus]);
